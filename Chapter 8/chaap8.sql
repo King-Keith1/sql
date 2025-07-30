@@ -163,3 +163,8 @@ CREATE INDEX visits2009_idx ON pls_fy2009_pupld09a (visits);
 COPY pls_fy2009_pupld09a
 FROM 'C:\Bootcamp2025\SQL\practical-sql-main\Chapter_08\pls_fy2009_pupld09a.csv'
 WITH (FORMAT CSV, HEADER);
+
+SELECT city, stabr
+FROM pls_fy2014_pupld14a
+GROUP BY city, stabr
+ORDER BY city, stabr;
