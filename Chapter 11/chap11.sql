@@ -16,6 +16,8 @@ SELECT
     date_part('day', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "D",
     date_part('hour', TIMESTAMPTZ '2025-07-31 09:00:00+02') AS "H";
 
+SHOW timezone;
+
 CREATE TABLE current_time_example (
 	time_id bigserial,
 	current_timestamp_col timestamp with time zone,
@@ -82,6 +84,8 @@ WITH (FORMAT CSV, HEADER, DELIMITER ',');
 
 CREATE INDEX tpep_pickup_idx
 ON nyc_yellow_taxi_trips_2016_06_01 (tpep_pickup_datetime);
+
+SELECT * FROM nyc_yellow_taxi_trips_2016_06_01
 
 SELECT count(*) FROM nyc_yellow_taxi_trips_2016_06_01;
 
