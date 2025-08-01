@@ -1,0 +1,9 @@
+name,birth_date,num_sales,salary,role_name,job_description,base_salary
+Aragorn,1994-08-24,22,22400,Sales Rep,Helps promote and sign clients,20000
+Gandalf,1982-05-11,0,35000,Graphic Designer,"Helps with video editing, photo editing and market advertisement designs",35000
+Frodo,1999-01-18,0,18000,Videographer,Helps with all digital media productions,18000
+Legolas,1998-04-22,0,26000,Social Marketer,Helps with social media strategies and social data,26000
+Gimli,2000-11-08,10,20000,Sales Rep,Helps promote and sign clients,20000
+Samwise,2001-01-01,9,20000,Sales Rep,Helps promote and sign clients,20000
+Pippin,1999-09-26,18,21600,Sales Rep,Helps promote and sign clients,20000
+Merry,2005-08-07,0,26000,Social Marketer,Helps with social media strategies and social data,26000
