@@ -123,3 +123,121 @@ SELECT update_personal_days();
 --Python
 
 CREATE EXTENSION plpythonu;
+
+CREATE OR REPLACE FUNCTION trim_county(input_string text)
+RETURNS text AS $$
+    import re
+    cleaned = re.sub(r' County', '', input_string)
+    return cleaned
+$$ LANGUAGE plpythonu;
+
+--15.7
+
+CREATE TABLE grades (
+    student_id bigint,
+    course_id bigint,
+    course varchar(30) NOT NULL,
+    grade varchar(5) NOT NULL,
+PRIMARY KEY (student_id, course_id)
+);
+
+INSERT INTO grades
+VALUES
+    (1, 1, 'Biology 2', 'F'),
+    (1, 2, 'English 11B', 'D'),
+    (1, 3, 'World History 11B', 'C'),
+    (1, 4, 'Trig 2', 'B');
+
+CREATE TABLE grades_history (
+    student_id bigint NOT NULL,
+    course_id bigint NOT NULL,
+    change_time timestamp with time zone NOT NULL,
+    course varchar(30) NOT NULL,
+    old_grade varchar(5) NOT NULL,
+    new_grade varchar(5) NOT NULL,
+PRIMARY KEY (student_id, course_id, change_time)
+);  
+
+CREATE OR REPLACE FUNCTION record_if_grade_changed()
+    RETURNS trigger AS
+$$
+BEGIN
+    IF NEW.grade <> OLD.grade THEN
+    INSERT INTO grades_history (
+        student_id,
+        course_id,
+        change_time,
+        course,
+        old_grade,
+        new_grade)
+    VALUES
+        (OLD.student_id,
+         OLD.course_id,
+         now(),
+         OLD.course,
+         OLD.grade,
+         NEW.grade);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER grades_update
+  AFTER UPDATE
+  ON grades
+  FOR EACH ROW
+  EXECUTE PROCEDURE record_if_grade_changed();
+
+SELECT * FROM grades_history;
+
+SELECT * FROM grades;
+
+UPDATE grades
+SET grade = 'C'
+WHERE student_id = 1 AND course_id = 1;
+
+CREATE TABLE users (
+    user_id bigint PRIMARY KEY,
+    username varchar(50) NOT NULL,
+    password varchar(50) NOT NULL
+);
+
+INSERT INTO users (user_id, username, password)
+VALUES
+	(1, 'Alex', 'pass1'), 
+    (2, 'Cadee', 'pass2'),
+    (3, 'Ethan', 'pass3'),
+    (4, 'Courtney', 'pass4'),
+    (5, 'David', 'pass5'),
+    (6, 'Marvelous', 'pass6'),
+    (7, 'Lindo', 'pass7'),
+    (8, 'Pierre', 'pass8'),
+    (9, 'Ronny', 'pass9'),
+    (10, 'Sibu', 'pass10'),
+    (11, 'Tom', 'pass11'),
+    (12, 'Ulrich', 'pass12');
+
+CREATE TABLE login_log (
+    user_id bigint,
+    login_time timestamp with time zone DEFAULT now()
+);
+
+CREATE OR REPLACE FUNCTION log_login_attempt()
+RETURNS trigger AS
+$$
+BEGIN
+    INSERT INTO login_log (user_id)
+    VALUES (NEW.user_id);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;CREATE TRIGGER after_login
+AFTER UPDATE OF password -- or some other trigger for simulating login
+ON users
+FOR EACH ROW
+EXECUTE FUNCTION log_login_attempt();
+
+UPDATE users
+SET password = 'pass7'
+WHERE user_id = 7;
+
+SELECT * FROM login_log;
