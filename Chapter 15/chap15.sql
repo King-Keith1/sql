@@ -230,14 +230,16 @@ BEGIN
     VALUES (NEW.user_id);
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;CREATE TRIGGER after_login
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_login
 AFTER UPDATE OF password -- or some other trigger for simulating login
 ON users
 FOR EACH ROW
 EXECUTE FUNCTION log_login_attempt();
 
 UPDATE users
-SET password = 'pass7'
-WHERE user_id = 7;
+SET password = 'passord'
+WHERE user_id = 4;
 
 SELECT * FROM login_log;
